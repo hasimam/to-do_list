@@ -12,3 +12,42 @@ html, body {
   padding: 20px;
   text-align: center;
 }
+
+.wrap {
+    white-space: pre-wrap;      /* CSS3 */
+    white-space: -moz-pre-wrap; /* Firefox */
+    white-space: -pre-wrap;     /* Opera <7 */
+    white-space: -o-pre-wrap;   /* Opera 7 */
+    word-wrap: break-word;      /* IE */
+}
+
+.text-div {
+    float: left;
+    width: 85%;
+}
+
+.task {
+    overflow: auto;
+}
+
+.badge-pending {
+    color: #fff;
+    background-color: #dc3545 !important;
+}
+
+.badge-done {
+    color: #fff;
+    background-color: #28a745 !important;
+}
+
+.list-group div:hover {
+    cursor: pointer;
+}
+
+#doneList div {
+   background: aquamarine;
+ }
+
+#pendingList div {
+  background: lightpink;
+}

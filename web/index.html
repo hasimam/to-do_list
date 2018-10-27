@@ -8,13 +8,41 @@
     <meta name="scaffolded-by" content="https://github.com/google/stagehand">
     <title>to_do_list</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="packages/bootjack/css/bootstrap.min.css">
     <link rel="icon" href="favicon.ico">
     <script defer src="main.dart.js"></script>
 </head>
 
 <body>
-
-  <div id="output"></div>
-
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>To-Do List</h2>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 30px">
+            <div class="col-sm-12">
+                <div class="form-group mx-sm-3 mb-2" style="float: left; margin-right: 20px">
+                    <label for="newTaskInput" class="sr-only">New Task: </label>
+                    <input type="text" class="form-control" id="newTaskInput" placeholder="type in the task please">
+                </div>
+                <button type="button" class="btn btn-primary mb-2">Submit</button>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 30px">
+            <div class="col-sm-6">
+                <h3>Pending</h3>
+                <ul class="list-group" id="pendingList">
+                    <li href="#" class="list-group-item list-group-item-action text-muted" aria-disabled="true">Empty</li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h3>Done</h3>
+                <ul class="list-group" id="doneList">
+                    <li href="#" class="list-group-item list-group-item-action text-muted" aria-disabled="true">Empty</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
