@@ -44,10 +44,12 @@ html, body {
     cursor: pointer;
 }
 
-#doneList div {
-   background: aquamarine;
- }
-
-#pendingList div {
-  background: lightpink;
+.task-input {
+    width: 100%;
+    resize: vertical;
+    min-height: 55px;
 }
+
+#doneList div .text-div {
+    text-decoration: line-through;
+ }
