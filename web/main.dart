@@ -1,44 +1,46 @@
 import 'dart:html';
 import 'dart:async';
+import 'to_do.dart';
+import 'time_control.dart';
+import 'dart:core';
+
+Map<int, ToDoTask> taskList;
 
 TextAreaElement toDoInput;
 UListElement toDoPendingList;
 UListElement toDoDoneList;
 SpanElement dateToShow;
 SpanElement timeToShow;
-
+ButtonElement addTaskBtn;
 SpanElement pendingCount;
 SpanElement doneCount;
 
 Timer _timer;
-DateTime time = new DateTime.now();
-String dateStr = '';
 
-List _days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-List _months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-'Oct', 'Nov', 'Dec'];
-int hours;
-int minutes;
-String seconds;
+
 
 void main() {
+  // initializing variables
+  taskList = new Map();
   toDoInput = querySelector('#newTaskInput');
   toDoPendingList = querySelector('#pendingList');
   toDoDoneList = querySelector('#doneList');
   dateToShow = querySelector('#dateSpan');
   timeToShow = querySelector('#timeSpan');
+  addTaskBtn = querySelector('#addBtn');
 
   pendingCount = querySelector('#pendingCount');
   doneCount = querySelector('#doneCount');
 
-  toDoInput.onChange.listen(addNewItem);
+  addTaskBtn.onClick.listen(addNewItem);
 
+  // setup time and date mechanism
   var oneSecond = new Duration(seconds: 1);
   _timer = new Timer.periodic(oneSecond, updateTime);
   updateTime(_timer);
 
-  pendingCount.text = '${(toDoPendingList.children.length-1).toString()} tasks';
-  doneCount.text = '${(toDoDoneList.children.length-1).toString()} tasks';
+  // update counters at the beginning
+  calcCount();
 }
 
 void updateTime(Timer t) {
@@ -46,42 +48,26 @@ void updateTime(Timer t) {
   dateToShow.text = getDate();
 }
 
-String getDate() {
-  time = new DateTime.now();
-  dateStr = [_days[time.weekday - 1], _months[time.month - 1], time.day].join(' ');
-  return dateStr;
-}
+Future addNewItem(Event e) async {
+  // in order to use await anf Future event we need to make this async function
 
-String getTime() {
-  time = new DateTime.now();
-  hours = time.hour;
-  minutes = time.minute;
-  seconds = time.second.toString().padLeft(2, '0');
-  return "$hours:$minutes:$seconds";
-}
+  // validate text value, empty text get alarm
+  if (toDoInput.value == '') {
+    toDoInput.style.borderColor = 'red';
+    await Future.delayed(const Duration(milliseconds: 500), () {
+      toDoInput.style.borderColor = '#ccc';
+      toDoInput.focus();
+    });
+    return;
+  }
 
-void addNewItem(Event e) {
-  // create the task and its components
-  var newToDoElement = new DivElement();
-  var textDiv = new DivElement();
-  textDiv.classes = ['text-div', 'wrap'];
-  textDiv.text = toDoInput.value;
-  newToDoElement.append(textDiv);
-  newToDoElement.classes = ['list-group-item', 'task'];
-  var spanElement = new SpanElement();
-  spanElement.classes = ['badge', 'badge-pending'];
-  spanElement.text = 'Pending';
-  spanElement.onClick.listen(spanClick);
-  newToDoElement.append(spanElement);
-  var taskDateTimeDiv = new DivElement();
-  taskDateTimeDiv.classes = ['text-muted', 'font-italic', 'date-time-div'];
-  taskDateTimeDiv.style.float = 'right';
-  taskDateTimeDiv.style.marginTop = '10px';
-  taskDateTimeDiv.text = 'Date: ${getDate()},   Time: ${getTime()}';
-  newToDoElement.append(taskDateTimeDiv);
+  // create new task object and add it to tasks list
 
-  // bind the action that controls task's state (pending, Done) to click event
-  newToDoElement.onClick.listen(moveElement);
+  // use the epoch time to make id to the task elements, (other solution would be id's from database)
+  int addTime = getTimeInMs();
+  ToDoTask newTask = ToDoTask(toDoInput.value, addTime);
+  taskList[addTime] = newTask;
+  DivElement newToDoElement = newTask.getElement(moveElement, deleteTsk);
 
   // reset after adding
   toDoInput.value = '';
@@ -89,60 +75,83 @@ void addNewItem(Event e) {
 
   // adding the task with the animation
   toDoPendingList.children.insert(1, newToDoElement);
-  var animation = newToDoElement.animate([{"opacity": 0}, {"opacity": 100}], 300);
-  animation.play();
+  newToDoElement.animate([{"opacity": 0}, {"opacity": 100}], 500).play();
 
   // update counters after adding
   calcCount();
 }
 
 void calcCount() {
-  pendingCount.text = '${(toDoPendingList.children.length-1).toString()} tasks';
-  doneCount.text = '${(toDoDoneList.children.length-1).toString()} tasks';
+  // prepare the unit
+  String pendingTaskCount = toDoPendingList.children.length-1 <= 1 ? 'Task' : 'Tasks';
+  String doneTaskCount = toDoDoneList.children.length-1 <= 1 ? 'Task' : 'Tasks';
+
+  // first element is the Li element (with Empty list label)
+  pendingCount.text = '( ${(toDoPendingList.children.length-1).toString()} $pendingTaskCount )';
+  doneCount.text = '( ${(toDoDoneList.children.length-1).toString()} $doneTaskCount )';
 }
 
-void spanClick(Event e) {
+void deleteTsk(Event e) {
   e.stopPropagation();
-  e.preventDefault();
+
+  Element selectedElement = e.target;
+  int selectedId = int.parse(selectedElement.parent.dataset['task-id']);
+  selectedElement.parent.animate([{"opacity": 100}, {"opacity": 0}], 300)..
+  onFinish.listen((Event e){
+
+    if (selectedElement.parent.parent == toDoPendingList) {
+      // hide (list empty) note from the list after entering it
+      if (toDoPendingList.children.length == 2)
+        toDoPendingList.children[0].style.display = '';
+    } else {
+      if (toDoDoneList.children.length == 2)
+        toDoDoneList.children[0].style.display = '';
+    }
+
+    selectedElement.parent.remove();
+    taskList.remove(selectedId);
+    calcCount();
+
+  })..play();
 }
 
 void moveElement(Event e) {
-  e.preventDefault();
-  var newToDoElement = new DivElement();
+  Element clickedToDoElement = e.target;
+  if (clickedToDoElement.classes.contains('text-div') ||
+      clickedToDoElement.classes.contains('date-time-div') ||
+      clickedToDoElement.classes.contains('badge') )
+    clickedToDoElement = clickedToDoElement.parent;
 
-  newToDoElement = e.target;
-  if (newToDoElement.classes.contains('text-div') ||
-      newToDoElement.classes.contains('date-time-div'))
-    newToDoElement = newToDoElement.parent;
+  int selectedId = int.parse(clickedToDoElement.dataset['task-id']);
 
-  var animation = newToDoElement.animate([{"opacity": 100}, {"opacity": 0}], 300);
-  animation.onFinish.listen((Event e) {
-    // show (list empty) note to the empty list after leaving it
-    if (newToDoElement.parent.children.length == 2)
-      newToDoElement.parent.children[0].style.display = '';
+  // make disappearing animation before moving the task
+  clickedToDoElement.animate([{"opacity": 100}, {"opacity": 0}], 300)
+    ..onFinish.listen((Event e) {
 
-    if (newToDoElement.parent == toDoPendingList) {
-      // hide (list empty) note from the list after entering it
-      if (toDoDoneList.children.length == 1)
-        toDoDoneList.children[0].style.display = 'none';
+      taskList[selectedId].changeState();
 
-      // some changes to the task after changing state between pending and done
-      newToDoElement.querySelector('span').classes = ['badge-done', 'badge'];
-      newToDoElement.querySelector('span').text = 'Done';
-      toDoDoneList.children.insert(1, newToDoElement);
-    } else {
-      if (toDoPendingList.children.length == 1)
-        toDoPendingList.children[0].style.display = 'none';
+      // show (list empty) note to the empty list after leaving it
+      if (clickedToDoElement.parent.children.length == 2)
+        clickedToDoElement.parent.children[0].style.display = '';
 
-      newToDoElement.querySelector('span').classes = ['badge-pending', 'badge'];
-      newToDoElement.querySelector('span').text = 'Pending';
-      toDoPendingList.children.insert(1, newToDoElement);
-    }
-    var animation = newToDoElement.animate([{"opacity": 0}, {"opacity": 100}], 300);
-    animation.onFinish.listen((Event e){
-      calcCount();
-    });
-    animation.play();
-  });
-  animation.play();
+      if (clickedToDoElement.parent == toDoPendingList) {
+        // hide (list empty) note from the list after entering it
+        if (toDoDoneList.children.length == 1)
+          toDoDoneList.children[0].style.display = 'none';
+
+        toDoDoneList.children.insert(1, clickedToDoElement);
+      } else {
+        if (toDoPendingList.children.length == 1)
+          toDoPendingList.children[0].style.display = 'none';
+
+        toDoPendingList.children.insert(1, clickedToDoElement);
+      }
+
+      // make appearing animation after moving the task
+      clickedToDoElement.animate([{"opacity": 0}, {"opacity": 100}], 300)
+        ..onFinish.listen((Event e){
+          calcCount();
+        })..play();
+
+  })..play();
 }

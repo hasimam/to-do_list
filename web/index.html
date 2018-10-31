@@ -24,25 +24,29 @@
             <div class="col-sm-6">
                 <div class="form-group mx-sm-3 mb-2">
                     <label for="newTaskInput">New Task: </label>
-                    <span class="text-muted" style="margin-right: 0px; float: right">Time:<span id="timeSpan" style="margin-left: 5px"></span></span>
-                    <span class="text-muted" style="margin-right: 20px; float: right">Date:<span id="dateSpan" style="margin-left: 5px"></span></span>
+                    <span class="text-muted" style="margin-right: 0px; float: right">Time:<span id="timeSpan"></span></span>
+                    <span class="text-muted" style="margin-right: 20px; float: right">Date:<span id="dateSpan"></span></span>
                     <textarea class="form-control task-input" id="newTaskInput" placeholder="type in the task please"></textarea>
                 </div>
-                <button type="button" class="btn btn-primary mb-2">Add</button>
+                <button id="addBtn" type="button" class="btn btn-primary mb-2">Add</button>
             </div>
             <div class="col-sm-6"></div>
         </div>
         <div class="row" style="margin-top: 30px">
             <div class="col-sm-6">
-                <span id="pendingCount" style="float: right; margin-top: 25px; margin-right: 10px"></span>
-                <h3>Pending</h3>
+                <div>
+                    <span id="pendingCount" class="text-muted">( 0 Task )</span>
+                    <h3>Pending</h3>
+                </div>
                 <ul class="list-group" id="pendingList">
                     <li href="#" class="list-group-item list-group-item-action text-muted" aria-disabled="true">Empty</li>
                 </ul>
             </div>
             <div class="col-sm-6">
-                <span id="doneCount" style="float: right; margin-top: 25px; margin-right: 10px"></span>
-                <h3>Done</h3>
+                <div>
+                    <span id="doneCount" class="text-muted">( 0 Task )</span>
+                    <h3>Done</h3>
+                </div>
                 <ul class="list-group" id="doneList">
                     <li href="#" class="list-group-item list-group-item-action text-muted" aria-disabled="true">Empty</li>
                 </ul>
