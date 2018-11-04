@@ -43,7 +43,7 @@ class ToDoTask {
     newToDoElement.append(spanElement);
     var taskDateTimeDiv = DivElement();
     taskDateTimeDiv.classes = ['text-muted', 'font-italic', 'date-time-div'];
-    taskDateTimeDiv.text = '${getDate(this.creationDate)}, ${getTime(this.creationDate)}';
+    taskDateTimeDiv.text = '${getTime(this.creationDate)}';
     newToDoElement.append(taskDateTimeDiv);
 
     newToDoElement.dataset['taskId'] = this.id.toString();

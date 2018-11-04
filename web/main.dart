@@ -9,7 +9,6 @@ Map<int, ToDoTask> taskList;
 TextAreaElement toDoInput;
 UListElement toDoPendingList;
 UListElement toDoDoneList;
-SpanElement dateToShow;
 SpanElement timeToShow;
 ButtonElement addTaskBtn;
 SpanElement pendingCount;
@@ -25,7 +24,6 @@ void main() {
   toDoInput = querySelector('#newTaskInput');
   toDoPendingList = querySelector('#pendingList');
   toDoDoneList = querySelector('#doneList');
-  dateToShow = querySelector('#dateSpan');
   timeToShow = querySelector('#timeSpan');
   addTaskBtn = querySelector('#addBtn');
 
@@ -45,11 +43,10 @@ void main() {
 
 void updateTime(Timer t) {
   timeToShow.text = getTime();
-  dateToShow.text = getDate();
 }
 
 Future addNewItem(Event e) async {
-  // in order to use await anf Future event we need to make this async function
+  // in order to use await and Future event we need to make this async function
 
   // validate text value, empty text get alarm
   if (toDoInput.value == '') {

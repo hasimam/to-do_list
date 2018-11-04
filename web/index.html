@@ -9,23 +9,27 @@
     <title>to_do_list</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="packages/bootjack/css/bootstrap.min.css">
+    <link rel="stylesheet" href="packages/font_awesome/css/font-awesome.min.css">
     <link rel="icon" href="favicon.ico">
     <script defer src="main.dart.js"></script>
 </head>
 
 <body>
-    <div class="container">
+    <div class="container-fluid header">
         <div class="row">
             <div class="col-sm-12">
-                <h2>To-Do List</h2>
+                <div class="fa fa-check-square-o logo"></div>
+                <div class="logo-text">To-Do List</div>
+                <span id="timeSpan" class="text-muted"></span>
+                <i class="fa fa-circle Blink"></i>
             </div>
         </div>
+    </div>
+    <div class="container">
         <div class="row" style="margin-top: 30px">
             <div class="col-sm-6">
                 <div class="form-group mx-sm-3 mb-2">
                     <label for="newTaskInput">New Task: </label>
-                    <span class="text-muted" style="margin-right: 0px; float: right">Time:<span id="timeSpan"></span></span>
-                    <span class="text-muted" style="margin-right: 20px; float: right">Date:<span id="dateSpan"></span></span>
                     <textarea class="form-control task-input" id="newTaskInput" placeholder="type in the task please"></textarea>
                 </div>
                 <button id="addBtn" type="button" class="btn btn-primary mb-2">Add</button>
@@ -36,7 +40,7 @@
             <div class="col-sm-6">
                 <div>
                     <span id="pendingCount" class="text-muted">( 0 Task )</span>
-                    <h3>Pending</h3>
+                    <h3>To Do ..</h3>
                 </div>
                 <ul class="list-group" id="pendingList">
                     <li href="#" class="list-group-item list-group-item-action text-muted" aria-disabled="true">Empty</li>

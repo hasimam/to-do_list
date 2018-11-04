@@ -4,9 +4,24 @@ body {
     user-select: none;
 }
 
-#output {
-  padding: 20px;
-  text-align: center;
+.header {
+    background: #1b80c7;
+    color: white;
+    padding: 8px 33px;
+    font-size: 30px;
+}
+
+.logo {
+    float: left;
+    margin-top: 2px;
+    margin-right: 15px;
+    color: lightgreen;
+}
+
+.logo-text {
+    font-weight: bold;
+    float: left;
+    font-size: 23px;
 }
 
 .date-time-div {
@@ -23,6 +38,7 @@ body {
 
 .task {
     overflow: auto;
+    margin-bottom: 10px !important;
 }
 
 span.badge {
@@ -87,6 +103,24 @@ span.close_task:hover {
     color: #dc3545;
 }
 
-#timeSpan, #dateSpan {
-    margin-left: 5px;
+#timeSpan {
+    font-size: initial;
+    color: white;
+    margin-top: 5px;
+    float: right;
+}
+
+.Blink {
+    animation: blinker .5s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+
+    font-size: initial !important;
+    float: right;
+    color: lightgreen;
+    margin-top: 8px;
+    margin-right: 11px
+}
+
+@keyframes blinker {
+    from { opacity: 1; }
+    to { opacity: 0; }
 }

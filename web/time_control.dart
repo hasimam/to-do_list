@@ -9,7 +9,7 @@ int hours;
 int minutes;
 String seconds;
 
-String getDate([DateTime time]) {
+String getDate([DateTime time]) { // not used
   if (time == null) time = DateTime.now();
   dateStr = [_days[time.weekday - 1], _months[time.month - 1], time.day].join(' ');
   return dateStr;
@@ -20,7 +20,8 @@ String getTime([DateTime time]) {
   hours = time.hour;
   minutes = time.minute;
   seconds = time.second.toString().padLeft(2, '0');
-  return "$hours:$minutes:$seconds";
+  dateStr = [_days[time.weekday - 1], _months[time.month - 1], time.day].join(' ');
+  return "$dateStr, $hours:$minutes:$seconds";
 }
 
 int getTimeInMs() {
